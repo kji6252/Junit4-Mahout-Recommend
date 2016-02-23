@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Hello Millky</title>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+</head>
+<body ng-app="stockApp" ng-controller="stockCtrl">
+<section>
+<div> 
+<ul>
+  <li ng-repeat="x in names">
+    <span >{{ x }}</span>
+  </li>
+</ul>
+</div>
+</section>
+<aside>
+<div style="hieght:500px;">
+<p>Type a letter in the input field:</p>
+
+<p>
+<form novalidate>
+<input type="text" ng-model="test">
+<button ng-click="reset()">RESET</button>
+</form>
+</p>
+
+<ul>
+  <li ng-repeat="x in stocks | filter:test">
+    <span ng-click="ajaxSubmit(x.id)">{{ x.name }}</span>
+  </li>
+</ul>
+</div>
+</aside>
+<script>
+var stockApp = angular.module('stockApp', []);
+stockApp.controller('stockCtrl', function($scope, $http) {
+	 $http.get("/allStockInfo")
+    .then(function(response) {
+        $scope.stocks = response.data;
+    });
+    
+	$scope.ajaxSubmit =  function(data) {
+		 $http.get("/stockInfo", {params: {id: data}})
+    	.then(function(response) {
+        $scope.names = response.data;
+    });
+ 	};
+ 	
+    $scope.reset = function() {
+        $scope.test = angular.copy('');
+    };
+});
+
+</script>
+
+</body>
+</html>

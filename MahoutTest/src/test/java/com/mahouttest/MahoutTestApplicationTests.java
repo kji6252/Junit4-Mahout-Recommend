@@ -46,7 +46,7 @@ public class MahoutTestApplicationTests {
 			long userID = users.nextLong(); /* 현재 유저 ID */ 
 			
 			/* 현재 유저 ID에 해당되는 5개 아이템 추천 */ 
-			List<RecommendedItem> recommendations = recommender.recommend(userID, 5); 
+			List<RecommendedItem> recommendations = recommender.recommend(56, 5); 
 			for(RecommendedItem recommenation : recommendations){ 
 				System.out.println(userID +","+ recommenation.getItemID()+","+recommenation.getValue()); 
 				} 
@@ -103,17 +103,17 @@ public class MahoutTestApplicationTests {
 		
 		int x= 1; 
 		/* 데이터 모델 내의 유저들의 iterator를 단계별로 이동하며 추천 아이템들 제공 */ 
-		for(LongPrimitiveIterator users = dm.getUserIDs(); users.hasNext();){ 
+		for(LongPrimitiveIterator items = dm.getItemIDs(); items.hasNext();){ 
 			
-			long userID = users.nextLong(); /* 현재 유저 ID */ 
+			long itemID = items.nextLong(); /* 현재 item ID */ 
 			
-			/* 현재 유저 ID에 해당되는 5개 아이템 추천 */ 
-			List<RecommendedItem> recommendations = recommender.recommend(userID, 5); 
+			/* 현재 item ID에 해당되는 5개 아이템 추천 */ 
+			List<RecommendedItem> recommendations = recommender.recommend(itemID, 5); 
 			for(RecommendedItem recommenation : recommendations){ 
-				System.out.println(userID +","+ recommenation.getItemID()+","+recommenation.getValue()); 
+				System.out.println(itemID +","+ recommenation.getItemID()+","+recommenation.getValue()); 
 				} 
 			
-			if(++x > 5) break; /* 유저 ID 5까지만 출력 */ 
+			if(++x > 5) break; /* item ID 5까지만 출력 */ 
 		}
 	}
 	
@@ -134,26 +134,26 @@ public class MahoutTestApplicationTests {
 		
 		int x= 1; 
 		/* 데이터 모델 내의 유저들의 iterator를 단계별로 이동하며 추천 아이템들 제공 */ 
-		for(LongPrimitiveIterator users = dm.getUserIDs(); users.hasNext();){ 
+		for(LongPrimitiveIterator items = dm.getItemIDs(); items.hasNext();){ 
 			
-			long userID = users.nextLong(); /* 현재 유저 ID */ 
+			long itemID = items.nextLong(); /* 현재 item ID */ 
 			
-			/* 현재 유저 ID에 해당되는 5개 아이템 추천 */ 
-			List<RecommendedItem> recommendations = recommender.recommend(userID, 5); 
+			/* 현재 item ID에 해당되는 5개 아이템 추천 */ 
+			List<RecommendedItem> recommendations = recommender.recommend(itemID, 5); 
 			for(RecommendedItem recommenation : recommendations){ 
-				System.out.println(userID +","+ recommenation.getItemID()+","+recommenation.getValue()); 
+				System.out.println(itemID +","+ recommenation.getItemID()+","+recommenation.getValue()); 
 				} 
 			
-			if(++x > 5) break; /* 유저 ID 5까지만 출력 */ 
+			if(++x > 5) break; /* 유저 item 5까지만 출력 */ 
 		}
 	}
 	
 	@Test
-	public void StockItemRecommendTest2() throws Exception {
+	public void StockItemRecommendTest1() throws Exception {
 		/* 데이터 모델 생성 */ 
 		
 		//DataModel dm = new FileDataModel(new File(MahoutBootApplication.class.getResource("/data/movies.csv").getFile())); 
-		DataModel dm = new FileDataModel(new File("src/main/resources/data/stock.csv"));
+		DataModel dm = new FileDataModel(new File("src/main/resources/data/stockData.csv"));
 		
 		/* 유사도 모델 생성 */ 
 		ItemSimilarity sim; 
