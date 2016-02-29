@@ -27,73 +27,73 @@ public class MahoutTestApplicationTests {
 
 	@Test
 	public void UserRecommendTest1() throws Exception {
-		/* µ¥ÀÌÅÍ ¸ğµ¨ »ı¼º */ 
+		/* ë°ì´í„° ëª¨ë¸ ìƒì„± */ 
 		
 		//DataModel dm = new FileDataModel(new File(MahoutBootApplication.class.getResource("/data/movies.csv").getFile())); 
-		DataModel dm = new FileDataModel(new File("bin/data/movies.csv"));
+		DataModel dm = new FileDataModel(new File("./src/main/resources/data/movies.csv"));
 		
-		/* À¯»çµµ ¸ğµ¨ »ı¼º */ 
+		/* ìœ ì‚¬ë„ ëª¨ë¸ ìƒì„± */ 
 		UserSimilarity sim; 
 		sim = new PearsonCorrelationSimilarity(dm);
-		/* ¸ğµç À¯Àúµé·ÎºÎÅÍ ÁÖ¾îÁø À¯Àú¿Í Æ¯Á¤ ÀÓ°è°ªÀ» ÃæÁ·ÇÏ°Å³ª ÃÊ°úÇÏ´Â neighborhood ±âÁØ */ 
+		/* ëª¨ë“  ìœ ì €ë“¤ë¡œë¶€í„° ì£¼ì–´ì§„ ìœ ì €ì™€ íŠ¹ì • ì„ê³„ê°’ì„ ì¶©ì¡±í•˜ê±°ë‚˜ ì´ˆê³¼í•˜ëŠ” neighborhood ê¸°ì¤€ */ 
 		UserNeighborhood neighborhood = new ThresholdUserNeighborhood(0.1, sim, dm); 
-		/* »ç¿ëÀÚ ÃßÃµ±â »ı¼º */ 
+		/* ì‚¬ìš©ì ì¶”ì²œê¸° ìƒì„± */ 
 		UserBasedRecommender recommender = new GenericUserBasedRecommender(dm, neighborhood, sim); 
 		
 		int x= 1; 
-		/* µ¥ÀÌÅÍ ¸ğµ¨ ³»ÀÇ À¯ÀúµéÀÇ iterator¸¦ ´Ü°èº°·Î ÀÌµ¿ÇÏ¸ç ÃßÃµ ¾ÆÀÌÅÛµé Á¦°ø */ 
+		/* ë°ì´í„° ëª¨ë¸ ë‚´ì˜ ìœ ì €ë“¤ì˜ iteratorë¥¼ ë‹¨ê³„ë³„ë¡œ ì´ë™í•˜ë©° ì¶”ì²œ ì•„ì´í…œë“¤ ì œê³µ */ 
 		for(LongPrimitiveIterator users = dm.getUserIDs(); users.hasNext();){ 
-			long userID = users.nextLong(); /* ÇöÀç À¯Àú ID */ 
+			long userID = users.nextLong(); /* í˜„ì¬ ìœ ì € ID */ 
 			
-			/* ÇöÀç À¯Àú ID¿¡ ÇØ´çµÇ´Â 5°³ ¾ÆÀÌÅÛ ÃßÃµ */ 
+			/* í˜„ì¬ ìœ ì € IDì— í•´ë‹¹ë˜ëŠ” 5ê°œ ì•„ì´í…œ ì¶”ì²œ */ 
 			List<RecommendedItem> recommendations = recommender.recommend(56, 5); 
 			for(RecommendedItem recommenation : recommendations){ 
 				System.out.println(userID +","+ recommenation.getItemID()+","+recommenation.getValue()); 
 				} 
 			
-			if(++x > 5) break; /* À¯Àú ID 5±îÁö¸¸ Ãâ·Â */ 
+			if(++x > 5) break; /* ìœ ì € ID 5ê¹Œì§€ë§Œ ì¶œë ¥ */ 
 		}
 	}
 	
 	@Test
 	public void UserRecommendTest2() throws Exception {
-		/* µ¥ÀÌÅÍ ¸ğµ¨ »ı¼º */ 
+		/* ë°ì´í„° ëª¨ë¸ ìƒì„± */ 
 		
 		//DataModel dm = new FileDataModel(new File(MahoutBootApplication.class.getResource("/data/movies.csv").getFile())); 
-		DataModel dm = new FileDataModel(new File("bin/data/movies.csv"));
+		DataModel dm = new FileDataModel(new File("./src/main/resources/data/movies.csv"));
 		
-		/* À¯»çµµ ¸ğµ¨ »ı¼º */ 
+		/* ìœ ì‚¬ë„ ëª¨ë¸ ìƒì„± */ 
 		UserSimilarity sim; 
 		sim = new LogLikelihoodSimilarity(dm);
-		/* ¸ğµç À¯Àúµé·ÎºÎÅÍ ÁÖ¾îÁø À¯Àú¿Í Æ¯Á¤ ÀÓ°è°ªÀ» ÃæÁ·ÇÏ°Å³ª ÃÊ°úÇÏ´Â neighborhood ±âÁØ */ 
+		/* ëª¨ë“  ìœ ì €ë“¤ë¡œë¶€í„° ì£¼ì–´ì§„ ìœ ì €ì™€ íŠ¹ì • ì„ê³„ê°’ì„ ì¶©ì¡±í•˜ê±°ë‚˜ ì´ˆê³¼í•˜ëŠ” neighborhood ê¸°ì¤€ */ 
 		UserNeighborhood neighborhood = new ThresholdUserNeighborhood(0.1, sim, dm); 
-		/* »ç¿ëÀÚ ÃßÃµ±â »ı¼º */ 
+		/* ì‚¬ìš©ì ì¶”ì²œê¸° ìƒì„± */ 
 		UserBasedRecommender recommender = new GenericUserBasedRecommender(dm, neighborhood, sim); 
 		
 		int x= 1; 
-		/* µ¥ÀÌÅÍ ¸ğµ¨ ³»ÀÇ À¯ÀúµéÀÇ iterator¸¦ ´Ü°èº°·Î ÀÌµ¿ÇÏ¸ç ÃßÃµ ¾ÆÀÌÅÛµé Á¦°ø */ 
+		/* ë°ì´í„° ëª¨ë¸ ë‚´ì˜ ìœ ì €ë“¤ì˜ iteratorë¥¼ ë‹¨ê³„ë³„ë¡œ ì´ë™í•˜ë©° ì¶”ì²œ ì•„ì´í…œë“¤ ì œê³µ */ 
 		for(LongPrimitiveIterator users = dm.getUserIDs(); users.hasNext();){ 
 			
-			long userID = users.nextLong(); /* ÇöÀç À¯Àú ID */ 
+			long userID = users.nextLong(); /* í˜„ì¬ ìœ ì € ID */ 
 			
-			/* ÇöÀç À¯Àú ID¿¡ ÇØ´çµÇ´Â 5°³ ¾ÆÀÌÅÛ ÃßÃµ */ 
+			/* í˜„ì¬ ìœ ì € IDì— í•´ë‹¹ë˜ëŠ” 5ê°œ ì•„ì´í…œ ì¶”ì²œ */ 
 			List<RecommendedItem> recommendations = recommender.recommend(userID, 5); 
 			for(RecommendedItem recommenation : recommendations){ 
 				System.out.println(userID +","+ recommenation.getItemID()+","+recommenation.getValue()); 
 				} 
 			
-			if(++x > 5) break; /* À¯Àú ID 5±îÁö¸¸ Ãâ·Â */ 
+			if(++x > 5) break; /* ìœ ì € ID 5ê¹Œì§€ë§Œ ì¶œë ¥ */ 
 		}
 	}
 	
 	@Test
 	public void ItemRecommendTest1() throws Exception {
-		/* µ¥ÀÌÅÍ ¸ğµ¨ »ı¼º */ 
+		/* ë°ì´í„° ëª¨ë¸ ìƒì„± */ 
 		
 		//DataModel dm = new FileDataModel(new File(MahoutBootApplication.class.getResource("/data/movies.csv").getFile())); 
-		DataModel dm = new FileDataModel(new File("bin/data/movies.csv"));
+		DataModel dm = new FileDataModel(new File("./src/main/resources/data/movies.csv"));
 		
-		/* À¯»çµµ ¸ğµ¨ »ı¼º */ 
+		/* ìœ ì‚¬ë„ ëª¨ë¸ ìƒì„± */ 
 		ItemSimilarity sim; 
 		sim = new PearsonCorrelationSimilarity(dm);
 		
@@ -102,29 +102,29 @@ public class MahoutTestApplicationTests {
 		
 		
 		int x= 1; 
-		/* µ¥ÀÌÅÍ ¸ğµ¨ ³»ÀÇ À¯ÀúµéÀÇ iterator¸¦ ´Ü°èº°·Î ÀÌµ¿ÇÏ¸ç ÃßÃµ ¾ÆÀÌÅÛµé Á¦°ø */ 
+		/* ë°ì´í„° ëª¨ë¸ ë‚´ì˜ ìœ ì €ë“¤ì˜ iteratorë¥¼ ë‹¨ê³„ë³„ë¡œ ì´ë™í•˜ë©° ì¶”ì²œ ì•„ì´í…œë“¤ ì œê³µ */ 
 		for(LongPrimitiveIterator items = dm.getItemIDs(); items.hasNext();){ 
 			
-			long itemID = items.nextLong(); /* ÇöÀç item ID */ 
+			long itemID = items.nextLong(); /* í˜„ì¬ item ID */ 
 			
-			/* ÇöÀç item ID¿¡ ÇØ´çµÇ´Â 5°³ ¾ÆÀÌÅÛ ÃßÃµ */ 
+			/* í˜„ì¬ item IDì— í•´ë‹¹ë˜ëŠ” 5ê°œ ì•„ì´í…œ ì¶”ì²œ */ 
 			List<RecommendedItem> recommendations = recommender.recommend(itemID, 5); 
 			for(RecommendedItem recommenation : recommendations){ 
 				System.out.println(itemID +","+ recommenation.getItemID()+","+recommenation.getValue()); 
 				} 
 			
-			if(++x > 5) break; /* item ID 5±îÁö¸¸ Ãâ·Â */ 
+			if(++x > 5) break; /* item ID 5ê¹Œì§€ë§Œ ì¶œë ¥ */ 
 		}
 	}
 	
 	@Test
 	public void ItemRecommendTest2() throws Exception {
-		/* µ¥ÀÌÅÍ ¸ğµ¨ »ı¼º */ 
+		/* ë°ì´í„° ëª¨ë¸ ìƒì„± */ 
 		
 		//DataModel dm = new FileDataModel(new File(MahoutBootApplication.class.getResource("/data/movies.csv").getFile())); 
-		DataModel dm = new FileDataModel(new File("bin/data/movies.csv"));
+		DataModel dm = new FileDataModel(new File("./src/main/resources/data/movies.csv"));
 		
-		/* À¯»çµµ ¸ğµ¨ »ı¼º */ 
+		/* ìœ ì‚¬ë„ ëª¨ë¸ ìƒì„± */ 
 		ItemSimilarity sim; 
 		sim = new LogLikelihoodSimilarity(dm);
 		
@@ -133,29 +133,29 @@ public class MahoutTestApplicationTests {
 		
 		
 		int x= 1; 
-		/* µ¥ÀÌÅÍ ¸ğµ¨ ³»ÀÇ À¯ÀúµéÀÇ iterator¸¦ ´Ü°èº°·Î ÀÌµ¿ÇÏ¸ç ÃßÃµ ¾ÆÀÌÅÛµé Á¦°ø */ 
+		/* ë°ì´í„° ëª¨ë¸ ë‚´ì˜ ìœ ì €ë“¤ì˜ iteratorë¥¼ ë‹¨ê³„ë³„ë¡œ ì´ë™í•˜ë©° ì¶”ì²œ ì•„ì´í…œë“¤ ì œê³µ */ 
 		for(LongPrimitiveIterator items = dm.getItemIDs(); items.hasNext();){ 
 			
-			long itemID = items.nextLong(); /* ÇöÀç item ID */ 
+			long itemID = items.nextLong(); /* í˜„ì¬ item ID */ 
 			
-			/* ÇöÀç item ID¿¡ ÇØ´çµÇ´Â 5°³ ¾ÆÀÌÅÛ ÃßÃµ */ 
+			/* í˜„ì¬ item IDì— í•´ë‹¹ë˜ëŠ” 5ê°œ ì•„ì´í…œ ì¶”ì²œ */ 
 			List<RecommendedItem> recommendations = recommender.recommend(itemID, 5); 
 			for(RecommendedItem recommenation : recommendations){ 
 				System.out.println(itemID +","+ recommenation.getItemID()+","+recommenation.getValue()); 
 				} 
 			
-			if(++x > 5) break; /* À¯Àú item 5±îÁö¸¸ Ãâ·Â */ 
+			if(++x > 5) break; /* ìœ ì € item 5ê¹Œì§€ë§Œ ì¶œë ¥ */ 
 		}
 	}
 	
 	@Test
 	public void StockItemRecommendTest1() throws Exception {
-		/* µ¥ÀÌÅÍ ¸ğµ¨ »ı¼º */ 
+		/* ë°ì´í„° ëª¨ë¸ ìƒì„± */ 
 		
 		//DataModel dm = new FileDataModel(new File(MahoutBootApplication.class.getResource("/data/movies.csv").getFile())); 
-		DataModel dm = new FileDataModel(new File("src/main/resources/data/stockData.csv"));
+		DataModel dm = new FileDataModel(new File("./stockData.csv"));
 		
-		/* À¯»çµµ ¸ğµ¨ »ı¼º */ 
+		/* ìœ ì‚¬ë„ ëª¨ë¸ ìƒì„± */ 
 		ItemSimilarity sim; 
 		sim = new LogLikelihoodSimilarity(dm);
 		
@@ -164,18 +164,18 @@ public class MahoutTestApplicationTests {
 		
 		
 		int x= 1; 
-		/* µ¥ÀÌÅÍ ¸ğµ¨ ³»ÀÇ À¯ÀúµéÀÇ iterator¸¦ ´Ü°èº°·Î ÀÌµ¿ÇÏ¸ç ÃßÃµ ¾ÆÀÌÅÛµé Á¦°ø */ 
+		/* ë°ì´í„° ëª¨ë¸ ë‚´ì˜ ìœ ì €ë“¤ì˜ iteratorë¥¼ ë‹¨ê³„ë³„ë¡œ ì´ë™í•˜ë©° ì¶”ì²œ ì•„ì´í…œë“¤ ì œê³µ */ 
 		for(LongPrimitiveIterator users = dm.getUserIDs(); users.hasNext();){ 
 			
-			long userID = users.nextLong(); /* ÇöÀç À¯Àú ID */ 
+			long userID = users.nextLong(); /* í˜„ì¬ ìœ ì € ID */ 
 			
-			/* ÇöÀç À¯Àú ID¿¡ ÇØ´çµÇ´Â 5°³ ¾ÆÀÌÅÛ ÃßÃµ */ 
+			/* í˜„ì¬ ìœ ì € IDì— í•´ë‹¹ë˜ëŠ” 5ê°œ ì•„ì´í…œ ì¶”ì²œ */ 
 			List<RecommendedItem> recommendations = recommender.recommend(userID, 5); 
 			for(RecommendedItem recommenation : recommendations){ 
 				System.out.println(userID +","+ recommenation.getItemID()+","+recommenation.getValue()); 
 				} 
 			
-			//if(++x > 5) break; /* À¯Àú ID 5±îÁö¸¸ Ãâ·Â */ 
+			//if(++x > 5) break; /* ìœ ì € ID 5ê¹Œì§€ë§Œ ì¶œë ¥ */ 
 		}
 	}
 

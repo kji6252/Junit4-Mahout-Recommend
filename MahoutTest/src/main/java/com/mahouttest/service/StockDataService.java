@@ -1,16 +1,13 @@
 package com.mahouttest.service;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.mahout.cf.taste.impl.common.LongPrimitiveIterator;
 import org.apache.mahout.cf.taste.impl.model.file.FileDataModel;
 import org.apache.mahout.cf.taste.impl.neighborhood.ThresholdUserNeighborhood;
 import org.apache.mahout.cf.taste.impl.recommender.GenericItemBasedRecommender;
 import org.apache.mahout.cf.taste.impl.recommender.GenericUserBasedRecommender;
-import org.apache.mahout.cf.taste.impl.similarity.LogLikelihoodSimilarity;
 import org.apache.mahout.cf.taste.impl.similarity.PearsonCorrelationSimilarity;
 import org.apache.mahout.cf.taste.model.DataModel;
 import org.apache.mahout.cf.taste.neighborhood.UserNeighborhood;
@@ -18,7 +15,6 @@ import org.apache.mahout.cf.taste.recommender.RecommendedItem;
 import org.apache.mahout.cf.taste.recommender.UserBasedRecommender;
 import org.apache.mahout.cf.taste.similarity.ItemSimilarity;
 import org.apache.mahout.cf.taste.similarity.UserSimilarity;
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,12 +22,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.mahouttest.dao.StockInfoDAO;
 import com.mahouttest.dao.UserInfoDAO;
 import com.mahouttest.domain.model.StockData;
-import com.mahouttest.domain.model.UserInfo;
 
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
+@NoArgsConstructor
 public class StockDataService {
 	
 	@Autowired
@@ -43,18 +40,24 @@ public class StockDataService {
 	@Transactional(readOnly=true)
 	public List<StockData> stockUserRecommendList(long userId) throws Exception {
 		
+		int recommendCount = 5;
+		/*ë°ì´í„° ëª¨ë¸ ìƒì„±*/
 		//DataModel dm = new FileDataModel(new File(MahoutBootApplication.class.getResource("/data/movies.csv").getFile())); 
 		DataModel dm = new FileDataModel(new File("stockData.csv"));
 		
-		/* À¯»çµµ ¸ğµ¨ »ı¼º */ 
+		/* ìœ ì‚¬ë„ ëª¨ë¸ ìƒì„± */ 
 		UserSimilarity sim = new PearsonCorrelationSimilarity(dm);
 		
+		/*ëª¨ë“  ìœ ì €ë“¤ë¡œë¶€í„° ì£¼ì–´ì§„ ìœ ì €ì™€ íŠ¹ì • ì„ê³„ê°’ì„ ì¶©ì¡±í•˜ê±°ë‚˜ ì´ˆê³¼í•˜ëŠ” ì´ì›ƒ Neighborhood ê¸°ì¤€*/
 		UserNeighborhood neighborhood = new ThresholdUserNeighborhood(0.1, sim, dm);
 		
+		/*ì‚¬ìš©ì ì¶”ì²œê¸° ìƒì„±*/
 		UserBasedRecommender recommender =  new GenericUserBasedRecommender(dm, neighborhood, sim);
-			
-		/* ÇöÀç À¯Àú ID¿¡ ÇØ´çµÇ´Â 5°³ ¾ÆÀÌÅÛ ÃßÃµ */ 
-		List<RecommendedItem> recommendations = recommender.recommend(userId, 5); 
+		
+		/* í˜„ì¬ ìœ ì € IDì— í•´ë‹¹ë˜ëŠ” 5ê°œ ì•„ì´í…œ ì¶”ì²œ */ 
+		List<RecommendedItem> recommendations = recommender.recommend(userId, recommendCount);
+		long[] ids =  recommender.mostSimilarUserIDs(userId, recommendCount);
+		List<Long> mostUserIdList = com.google.common.primitives.Longs.asList(ids);
 /*		
 		for(RecommendedItem recommenation : recommendations){ 
 			System.out.println(userId +","+ recommenation.getItemID()+","+recommenation.getValue());
@@ -62,14 +65,19 @@ public class StockDataService {
 		} 
 */			
 		List<StockData> sdList = new ArrayList<StockData>();
-		for (RecommendedItem recommendedItem : recommendations) {
+		
+		for (int i = 0; i < recommendCount; i++) {
 			StockData sd = new StockData();
-			sd.setRate(recommendedItem.getValue());
-			sd.setUserInfo(userInfoDao.getOne(userId));
-			sd.setStockInfo(stockInfoDao.getOne(recommendedItem.getItemID()));
-			
+			if(recommendations.isEmpty() && recommendations != null){
+				if(recommendations.size() <= i){
+				sd.setRate(recommendations.get(i).getValue());
+				sd.setStockInfo(stockInfoDao.getOne(recommendations.get(i).getItemID()));
+				}
+			}
+			sd.setUserInfo(userInfoDao.getOne(mostUserIdList.get(i)));
 			sdList.add(sd);
 		}
+		
 		log.info(sdList.toString());
 		return sdList;
 	}
@@ -78,17 +86,19 @@ public class StockDataService {
 	@Transactional(readOnly=true)
 	public List<StockData> stockItemRecommendList(long stockId) throws Exception {
 		
+		/*ë°ì´í„° ëª¨ë¸ ìƒì„±*/
 		//DataModel dm = new FileDataModel(new File(MahoutBootApplication.class.getResource("/data/movies.csv").getFile())); 
 		DataModel dm = new FileDataModel(new File("stockData.csv"));
 		
-		/* À¯»çµµ ¸ğµ¨ »ı¼º */ 
-		ItemSimilarity sim = new LogLikelihoodSimilarity(dm);
+		/* ìœ ì‚¬ë„ ëª¨ë¸ ìƒì„± */ 
+		//ItemSimilarity sim = new LogLikelihoodSimilarity(dm);
+		ItemSimilarity sim = new PearsonCorrelationSimilarity(dm);
 		
+		/*ì¶”ì²œê¸° ì„ íƒ ItemBased*/
 		GenericItemBasedRecommender recommender =  new GenericItemBasedRecommender(dm, sim);
-			
-		/* ÇöÀç stock ID¿¡ ÇØ´çµÇ´Â 5°³ ¾ÆÀÌÅÛ ÃßÃµ */ 
-		List<RecommendedItem> recommendations = recommender.recommend(stockId, 5);
-	
+		
+		/* í˜„ì¬ stock IDì— í•´ë‹¹ë˜ëŠ” 5ê°œ ì•„ì´í…œ ì¶”ì²œ */ 
+		List<RecommendedItem> recommendations = recommender.mostSimilarItems(stockId, 5);
 		List<StockData> sdList = new ArrayList<StockData>();
 		for (RecommendedItem recommendedItem : recommendations) {
 			StockData sd = new StockData();

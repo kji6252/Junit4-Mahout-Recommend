@@ -7,31 +7,30 @@
 </head>
 <body ng-app="stockApp" ng-controller="stockCtrl">
 <section>
-<div> 
+선택된거 : {{ selectName }}
+</section>
+<section>
 <ul>
-  <li ng-repeat="x in names">
-    <span >{{ x }}</span>
+  <li ng-repeat="x in names" >
+    <span ng-click="ajaxSubmit(x.stockInfo.id,x.stockInfo.name)">{{ x }}</span>
   </li>
 </ul>
-</div>
 </section>
-<aside>
-<div style="hieght:500px;">
+<section>
 <p>Type a letter in the input field:</p>
-
 <p>
 <form novalidate>
 <input type="text" ng-model="test">
 <button ng-click="reset()">RESET</button>
 </form>
 </p>
-
+</section>
+<aside style="height:500px;overflow-y:scroll;border-top:1px solid #e5e5e5">
 <ul>
-  <li ng-repeat="x in stocks | filter:test">
-    <span ng-click="ajaxSubmit(x.id)">{{ x.name }}</span>
+  <li ng-repeat="x in stocks | filter:test track by x.name">
+    <span ng-click="ajaxSubmit(x.id,x.name)">{{ x.name }}</span>
   </li>
 </ul>
-</div>
 </aside>
 <script>
 var stockApp = angular.module('stockApp', []);
@@ -41,10 +40,11 @@ stockApp.controller('stockCtrl', function($scope, $http) {
         $scope.stocks = response.data;
     });
     
-	$scope.ajaxSubmit =  function(data) {
+	$scope.ajaxSubmit =  function(data, data2) {
 		 $http.get("/stockInfo", {params: {id: data}})
     	.then(function(response) {
         $scope.names = response.data;
+        $scope.selectName = data2;
     });
  	};
  	
